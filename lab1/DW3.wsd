@@ -1,0 +1,112 @@
+@startuml
+namespace view{
+class HomeView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+    +on_startup()
+}
+class NotificationView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+interface IView
+}
+namespace model{
+interface IWeatherService #Lavender
+{
+    + requestWeather()
+    + handleResponse()
+}
+class WeatherService #Lavender{
+  - apiUrl: str
+  - apiKey: str
+  + requestWeather()
+  + handleResponse()
+}
+
+class WeatherData #Lavender{
+  - temperature: int
+  - humidity: int
+  - windSpeed: int
+  + getData()
+  + setData()
+  + updateData()
+}
+interface IDateService #Lavender
+{
+    + requestWeather()
+    + handleResponse()
+}
+class DateService #Lavender{
+  - apiUrl: str
+  - apiKey: str
+  + requestWeather()
+  + handleResponse()
+}
+
+class DateData #Lavender{
+  -date: Datetime
+  + getData()
+  + setData()
+  + updateData()
+}
+}
+namespace controller {
+class Loader #Lavender{
+  -weather_service: WeatherService
+  -date_service: DateService  
+  -recommendations: RecommendationAnalyzer
+  - updateInterval: int
+  + start_load()
+  + stop_load()
+  -get_services()
+}
+interface IRecommendationAnalyzer #Lavender
+{
+  + analyzeData(weather_data: dict, date_time_data: str): List<str>
+  -get_services()
+}
+class RecommendationAnalyzer #Lavender{
+  -weather_service: WeatherService
+  -date_service: DateService  
+  - recommendations: List<String>
+  + analyzeData(weather_data: dict, date_time_data: str): List<str>
+  -get_services()
+}
+RecommendationAnalyzer ..|> IRecommendationAnalyzer
+Loader --> IRecommendationAnalyzer
+}
+HomeView ..|> IView
+WeatherService ..|> IWeatherService
+Loader -- Core: get_services
+RecommendationAnalyzer-- Core: get_services
+Loader --> IView
+IWeatherService ..> WeatherData: <<use>>
+IDateService ..> DateData: <<use>>
+DateService ..|> IDateService
+Loader ..> WeatherData: <<use>>
+Loader ..> DateData: <<use>>
+RecommendationAnalyzer ..> WeatherData: <<use>>
+RecommendationAnalyzer ..> DateData: <<use>>
+class Core << (S, RoyalBlue) Singleton >>
+HomeView <.. Core: <<instantiate>>
+NotificationView <.. Core: <<instantiate>>
+RecommendationAnalyzer --> IView
+NotificationView ..|> IView
+RecommendationAnalyzer <.. Core: <<instantiate>>
+Loader <.. Core: <<instantiate>>
+@enduml

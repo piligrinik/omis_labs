@@ -1,0 +1,90 @@
+@startuml
+state c <<choice>>
+[*] --> c
+c --> registration_window: registration
+c --> authorization_window: authorization
+c --> menu_window: unprivileged entry
+authorization_window: entry/ HomeView: show()
+authorization_window: do/ UserController: login()
+authorization_window: exit/ UserService: login()
+registration_window: entry/ RegisterView: show()
+registration_window: do/ UserController: register()
+registration_window: exit/ UserRepository: create_user()
+registration_window --> registration_window: [written data error]
+authorization_window --> authorization_window: [validation failure]
+menu_window: entry/ MenuView: show()
+registration_window --> menu_window: registration success 
+authorization_window --> menu_window: authorization succes
+authorization_window -->[*]: exit
+registration_window -->[*]: exit
+menu_window -->[*]: exit
+treatment_handbook_window:entry/ TreatmentView: show()
+treatment_handbook_window: do/ TreatmentController: get_all()
+treatment_handbook_window: do/ TreatmentRepository: get_all()
+treatment_handbook_window: do/ TreatmentController: get_treatment()
+treatment_handbook_window: exit/ TreatmentRepository: get_treatment()
+treatment_handbook_window --> treatment_handbook_window: sort treatment types \nby creteria
+menu_window --> treatment_handbook_window: treatment handbook\n lookup
+treatment_handbook_window --> menu_window
+state land_window {
+    state ch <<choice>>
+    [*]--> ch
+    ch --> land_lookup_window: [user isn't privileged]
+    ch --> land_control_window: [user is privileged]
+    land_control_window <-- land_control_window: new data\n implimentation
+    land_control_window: entry/ PrivLandDiagramView: show()
+    land_control_window:do/ LandController: get_all()
+    land_control_window:do/ LandController: update_land()
+    land_control_window:exit/ LandRepository: update_land()
+    land_lookup_window: entry/ LandDiagramView: show()
+    land_lookup_window: exit/ LandController: get_all()
+    land_control_window --> [*]: end of operation
+    land_lookup_window --> [*]: end of operation
+}
+menu_window --> land_window: land look up
+land_window --> menu_window
+state myPlant_window {
+    state ct <<choice>>
+    [*] --> ct
+    ct --> plant_window: [user isn't privileged]
+    ct --> plant_control_window: [user is privileged]
+    old_plant_window <-- plant_window: old plant\n data update
+    old_plant_window --> plant_window
+    new_plant_window <-- plant_control_window: new plant\n addition
+    new_plant_window --> plant_control_window
+    plant_window --> [*]: end of operation
+    plant_control_window --> [*]: end of operation
+    old_plant_window --> [*]: end of operation
+    new_plant_window --> [*]: end of operation
+    old_plant_window: entry/ OldPlandView: show()
+    old_plant_window: do/ PlantController: get_plant()
+    old_plant_window: do/ PlantRepository: get_plant()
+    old_plant_window: do/ PlantController: update_plant()
+    old_plant_window: do/ PlantRepository: update_plant()
+    old_plant_window: do/ PlantController: water_dates_comparison()
+    old_plant_window: exit/ OldPlantView: change_background()
+    plant_window: entry/ MyPlantView: show()
+    plant_window: do/ PlantController: get_all()
+    plant_window: exit/ PlantRepository: get_all()
+    plant_control_window: entry/ PrivPlantView: show()
+    plant_control_window: exit/ PrivPlantView: show_add_bttn()
+    new_plant_window: entry/ NewPlantView: show()
+    new_plant_window: do/ PlantController: add_plant()
+    new_plant_window: exit/ PlantRepository: add_plant()
+
+}
+menu_window --> myPlant_window: myPlants\n lookup
+myPlant_window --> menu_window
+plant_handbook_window::entry/ PlantView: show()
+plant_handbook_window: do/ PlantController: get_all()
+plant_handbook_window: do/ PlantRepository: get_all()
+plant_handbook_window: do/ PlantController: get_plant()
+plant_handbook_window: exit/ PlantRepository: get_plant()
+plant_handbook_window --> plant_handbook_window: sort plants \nby creteria
+menu_window --> plant_handbook_window: treatment handbook\n lookup
+plant_handbook_window --> menu_window
+plant_handbook_window --> [*]: exit
+treatment_handbook_window --> [*]: exit
+myPlant_window --> [*]: exit
+land_window --> [*]: exit
+@enduml

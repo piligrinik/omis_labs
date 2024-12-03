@@ -1,0 +1,54 @@
+@startuml
+namespace view{
+class HomeView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+interface IView
+}
+namespace model{
+interface IWeatherService #Lavender
+{
+    + requestWeather()
+    + handleResponse()
+}
+class WeatherService #Lavender{
+  - apiUrl: str
+  - apiKey: str
+  + requestWeather()
+  + handleResponse()
+}
+
+class WeatherData #Lavender{
+  - temperature: int
+  - humidity: int
+  - windSpeed: int
+  + getData()
+  + setData()
+  + updateData()
+}
+}
+namespace controller {
+class WeatherLoader #Lavender{
+  - updateInterval: int
+  + start_load()
+  + stop_load()
+}
+}
+HomeView ..|> IView
+WeatherService ..|> IWeatherService
+WeatherLoader -- Core
+WeatherLoader --> IView
+IWeatherService ..> WeatherData: <<use>>
+WeatherData <.. WeatherLoader: <<use>>
+class Core << (S, RoyalBlue) Singleton >>
+HomeView <.. Core: <<instantiate>>
+WeatherLoader <.. Core: <<instantiate>>
+@enduml

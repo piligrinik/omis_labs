@@ -1,0 +1,158 @@
+@startuml classdiagramModel
+class Core << (S, RoyalBlue) Singleton >>  {
+    +dbase
+    +app
+    +get_controller(name: str): Class
+    +get_view()
+}
+abstract DBModel
+class DBSession
+class DBase {
+    -db_url: str
+    -engine: Engine
+    +get_session(): DBSession
+}
+note right : this class and its essential \ncomponents are made suitable \nfor frameworks that work \nwith db through ORM
+class Plant{
+    +id: int
+    +registered: bool
+    +type: TypeofPlant
+    +descrittion: str
+    +sunny_hours: int
+    +watering_time: int
+    +todays_sunny_hours: int
+    +last_watering_day: date
+    
+}
+enum TypeOfPlant{
+    Grain
+    Feed
+    Oilseed
+    Spinning
+}
+enum Role{
+    AGRONOMIST
+    EMPLOYEE
+}
+class Treatment{
+    +id: int
+    +name: str
+    +type: TypeOfPlant
+    +type_of_plant: str
+}
+class User{
+    +id: int
+    +access_level: Role
+    +name: str
+    +login: str
+    +password: str
+    +location: str
+    
+}
+class Land{
+    +id: int
+    +square: int
+    +type: TypeOfPlant
+}
+interface IPlantData{
+    +get_all(): list[Plant]
+    +get_plant(id: int): Plant
+    +add_plant(plant: Plant)
+    +update_plant(plant: Plant)
+    +delete_plant(id: int)
+    +get_plant_types(): list[str]
+
+}
+interface ITreatmentData{
+    +get_all(): list[Treatment]
+    +get_treatment(id: int)
+}
+interface ILandData
+{
+    +get_all(): list[Land]
+    +get_by_type(id: int): Land
+    +add_type(land: Land)
+    +update_land(land: Land)
+    +delete_land(id: int)
+}
+interface IUserData{
+    +get_all(): list[User]
+    +get_user(id_int): User
+    +create_user(user: User)
+    +update_user(user: User)
+    +delete_user(id:int)
+    +get_access_level(id: int)
+    +get_access_level(user: User)
+}
+interface IUserService{
+    +login(user: User): bool
+    +register(user: User): bool
+}
+
+class TreatmentRepository{
+    -session: DBSession
+    +get_all(): list[Treatment]
+    +get_treatment(name: str)
+    
+}
+class PlantRepository{
+    -session: DBSession 
+    +get_all(): list[Plant]
+    +get_plant(name: str): Plant
+    +add_plant(plant: Plant)
+    +update_plant(plant: Plant)
+    +delete_plant(plant: Plant)
+    +get_plant_types(): list[str]
+
+    }
+class LandRepository{
+    -session: DBSession
+    +get_all(): list[Land]
+    +get_by_type(type: str): Land
+    +add_type(land: Land)
+    +update_land(land: Land)
+    +delete_land(land: Land)
+}
+class UserRepository{
+    -session: DBSession
+    +get_all(): list[User]
+    +get_user(id_int): User
+    +create_user(user: User)
+    +update_user(user: User)
+    +delete_user(id:int)
+    +get_access_level(id: int)
+    +get_access_level(user: User)
+}
+class UserService{
+    -user_repo: UserRepository
+    +login(user: User):bool
+    +register(user: User): bool
+}
+
+DBase *-- DBModel
+DBase *-- DBSession
+DBSession --* PlantRepository
+DBSession --* TreatmentRepository
+DBSession --* LandRepository
+DBSession --* UserRepository
+ITreatmentData ..> Treatment: <<use>>
+IPlantData ..> Plant: <<use>>
+ILandData ..> Land: <<use>>
+IUserData ..> User: <<use>>
+DBModel <|-- Plant
+DBModel <|-- Treatment
+DBModel <|-- Land
+DBModel <|-- User
+User --> "1" Role
+Land --> "1" TypeOfPlant
+Plant --> "1" TypeOfPlant
+Treatment --> "1" TypeOfPlant
+Core --> "+dbase" DBase: initialize
+PlantRepository ..|> IPlantData
+TreatmentRepository ..|> ITreatmentData
+LandRepository ..|> ILandData
+UserRepository ..|> IUserData
+UserService "user_repo" o-- UserRepository
+UserService ..|> IUserService
+IUserService ..> User: <<use>>
+@enduml

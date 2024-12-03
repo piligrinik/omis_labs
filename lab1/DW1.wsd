@@ -1,0 +1,109 @@
+в@startuml
+namespace model{
+class Animal #Lavender
+{
+    +id: int
+    +type: str
+    +health_level: Health
+    +quantity: int
+}
+enum Health #Lavender {
+    GOOD, 
+    BAD, 
+    IN_NEED_OF_CHECK, 
+    DECENT
+}
+Animal --> Health
+interface IAnimalData #Lavender 
+{
+    +get_all(): list[Animal]
+    +get_animal(id_int): Animal
+    +create(animal: Animal)
+    +update(animal: Animal)
+    +delete(id:int)
+}
+class AnimalRepository #Lavender
+{
+    +get_all(): list[Animal]
+    +get_animal(id_int): Animal
+    +create(animal: Animal)
+    +update(animal: Animal)
+    +delete(id:int)
+}
+class DBModel
+}
+DBModel <|-- Animal
+IAnimalData ..> Animal: <<use>>
+IAnimalData <|.. AnimalRepository
+namespace controller {
+class AnimalController #Lavender
+{
+   -repo: AnimalRepository
+    -core: Core
+    -view: IView
+    +get_all(): list[Animal]
+    +get_treatment(id: int): Animal
+    +add_treatment(dict)
+    +update_animal(dict)
+    +delete_treatment(id: int)
+}
+}
+class Core << (S, RoyalBlue) Singleton >>
+namespace view {
+class MyAnimalView #Lavender{
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+interface IView
+{
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+}
+class PrivAnimalView #Lavender{
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+    +show_add_bttn()
+}
+PrivAnimalView --|> MyAnimalView
+class NewAnimalView #Lavender
+{
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+class OldAnimalView #Lavender
+{
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+    +change_background(int Color)
+}
+}
+MyAnimalView <.. Core: <<instantiate>>
+NewAnimalView <.. Core: <<instantiate>>
+OldAnimalView <.. Core: <<instantiate>>
+MyAnimalView ..|> IView
+NewAnimalView ..|> IView
+OldAnimalView ..|> IView
+AnimalController --> IView
+Core ..> AnimalController: <<instantiate>>
+Core "1" -- "1" AnimalController: get_repo
+AnimalController ..> Animal: <<use>>
+@enduml

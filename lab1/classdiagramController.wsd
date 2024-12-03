@@ -1,0 +1,118 @@
+@startuml classdiagramController
+class Core << (S, RoyalBlue) Singleton >>  {
+    +dbase
+    +app
+    +get_controller(name: str): Class
+    +get_view()
+}
+class Plant
+class Treatment
+class Land
+class User
+abstract Controller{
+    -view: IView 
+    -get_repo(name: str)
+}
+interface IView
+IView --o Controller
+class HomeController{
+    -core: Core
+    -view: IView
+    +current_date: Datetime
+    +{static} get_date()
+
+
+}
+class UserController{
+    -repo: UserRepository
+    -core: Core
+    -view: IView
+    +login(logn: str, pswrd: str): bool
+    +register(*info)
+    -get_repo(name: str)
+}
+class PlantController{
+    -repo: PlantRepository
+    -core: Core
+    -view: IView
+    +current_date: Datetime
+    +get_all(): list[Plant]
+    +get_plant(id: int): Plant
+    +get_plant(name: str): Plant
+    +add_plant(list[str])
+    +update_plant(list[str])
+    +delete_plant(id: int)
+    +get_plant_types(): list[Enum]
+    +watering_dates_comparison(): bool
+    -get_repo(name: str)
+}
+class LandController{
+    -repo: LandRepository
+    -core: Core
+    -view: IView
+    +get_all(): list[Land]
+    +get_by_type(type: str): Land
+    +add_type(list[str])
+    +update_land(square: int)
+    +delete_land(id: int)
+    -get_repo(name: str)
+}
+class TreatmentController{
+    -repo: TreatmentRepository
+    -core: Core
+    -view: IView
+    +get_all(): list[Treatment]
+    +get_treatment(id: int): Treatment
+}
+
+interface IUserController{
+    +login(logn: str, pswrd: str): bool
+    +register(*info)
+
+}
+TreatmentController ..|> ITreatmentController
+TreatmentController ..> Treatment: <<use>>
+UserController ..|> IUserController
+UserController ..> User: <<use>>
+interface IPlantController{
+    +get_all(): list[Plant]
+    +get_plant(id: int): Plant
+    +get_plant(name: str): Plant
+    +add_plant(list[str])
+    +update_plant(list[str])
+    +delete_plant(id: int)
+    +get_plant_types(): list[Enum]
+    +watering_dates_comparison(): bool
+    -get_repo(name: str)
+}
+PlantController ..|> IPlantController
+PlantController ..> Plant: <<use>>
+interface ILandController{
+    +get_all(): list[Land]
+    +get_by_type(type: str): Land
+    +add_type(list[str])
+    +update_land(square: int)
+    +delete_land(id: int)
+    -get_repo(name: str)
+}
+LandController ..|> ILandController
+LandController ..> Land: <<use>>
+interface ITreatmentController{
+    +get_all(): list[Treatment]
+    +get_treatment(id: int): Treatment
+}
+Core ..> HomeController: <<instantiate>>
+Core ..> UserController: <<instantiate>>
+Core ..> PlantController: <<instantiate>>
+Core ..> LandController: <<instantiate>>
+Core ..> TreatmentController: <<instantiate>>
+Core "1" -- "1" UserController: get_repo
+Core "1" -- "1" UserController: get_service
+Core "1" -- "1" PlantController: get_repo
+Core "1" -- "1" LandController: get_repo
+Core "1" -- "1" TreatmentController: get_repo
+TreatmentController --|> Controller
+LandController --|> Controller
+UserController --|> Controller
+PlantController --|> Controller
+@enduml

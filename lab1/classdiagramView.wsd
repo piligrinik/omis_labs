@@ -1,0 +1,163 @@
+@startuml classdiagramView
+class Core << (S, RoyalBlue) Singleton >>  {
+    +dbase
+    +app
+    +get_controller(name: str): Class
+    +get_view()
+}
+interface IView{
+    +get_controller()
+    +build()
+    +show()
+}
+class HomeView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+class RegistrationView{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+}
+class MenuView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show_options()
+}
+class TreatmentView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+}
+class MyPlantView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+class PrivPlantView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+    +add_new_plant_bttn()
+}
+PrivPlantView --|> MyPlantView
+
+class NewPlantView 
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+class OldPlantView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+    +change_background(int Color)
+}
+class PlantListView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+}
+class LandDiagramView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+}
+class PrivLandDiagramView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+    +update()
+}
+PrivLandDiagramView --|> LandDiagramView
+class ChangeLandView
+{
+    - title: str
+    - size: Dimension
+    -core: Core
+    +controller: Controller
+    +get_controller()
+    +build()
+    +show()
+}
+MenuView ..|> IView
+RegistrationView ..|> IView
+TreatmentView ..|> IView
+OldPlantView ..|> IView
+NewPlantView ..> IView
+LandDiagramView ..|> IView
+ChangeLandView ..|> IView
+MyPlantView ..|> IView 
+PlantListView ..|> IView
+
+Core ..> HomeView: <<instantiate>>
+MenuView <.. Core: <<instantiate>>
+RegistrationView <.. Core: <<instantiate>>
+TreatmentView <.. Core: <<instantiate>>
+OldPlantView <.. Core: <<instantiate>>
+NewPlantView <.. Core: <<instantiate>>
+LandDiagramView <.. Core: <<instantiate>>
+ChangeLandView <.. Core: <<instantiate>>
+MyPlantView <.. Core: <<instantiate>>
+PlantListView <.. Core: <<instantiate>>
+@enduml
